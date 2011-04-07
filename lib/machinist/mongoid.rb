@@ -23,18 +23,18 @@ module Machinist
   class MongoidAdapter
     class << self
       def has_association?(object, attribute)
-        object.class.associations[attribute.to_s]
+        object.class.relations[attribute.to_s]
       end
 
       def class_for_association(object, attribute)
-        association = object.class.associations[attribute.to_s]
+        association = object.class.relations[attribute.to_s]
         association && association.klass
       end
 
       def assigned_attributes_without_associations(lathe)
         attributes = {}
         lathe.assigned_attributes.each_pair do |attribute, value|
-          association = lathe.object.class.associations[attribute.to_s]
+          association = lathe.object.class.relations[attribute.to_s]
           if association && (association.macro == :referenced_in) && !value.nil?
             attributes[association.foreign_key.to_sym] = value.id
           else
