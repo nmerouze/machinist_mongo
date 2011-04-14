@@ -28,4 +28,16 @@ module Spec
       end
     end
   end
+
+  module Mongomatic
+    def self.configure!
+      ::Mongomatic.db = Mongo::Connection.new.db("machinist_mongomatic")
+
+      ::Rspec.configure do |config|
+        config.before(:each) { Sham.reset }
+        config.after(:all)   { ::Mongomatic::Base.db.collections.each { |c| c.remove } }
+      end
+    end
+
+  end
 end
