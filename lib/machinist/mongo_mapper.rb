@@ -47,7 +47,7 @@ module Machinist
 
   module MongoMapperExtensions
 
-    module MachinistDocument
+    module Document
       extend ActiveSupport::Concern
         
       module ClassMethods
@@ -75,7 +75,7 @@ module Machinist
       end
     end
 
-    module MachinistEmbeddedDocument
+    module EmbeddedDocument
       extend ActiveSupport::Concern
 
       module ClassMethods
@@ -91,9 +91,9 @@ module Machinist
 end
 
 module MongoMapper::Document
-  include Machinist::MongoMapperExtensions::MachinistDocument
+  include Machinist::MongoMapperExtensions::Document
 end
 
 module MongoMapper::EmbeddedDocument
-  include Machinist::MongoMapperExtensions::MachinistEmbeddedDocument
+  include Machinist::MongoMapperExtensions::EmbeddedDocument
 end
