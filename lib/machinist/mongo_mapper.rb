@@ -46,40 +46,54 @@ module Machinist
   end
 
   module MongoMapperExtensions
+
     module Document
-      def make(*args, &block)
-        lathe = Lathe.run(Machinist::MongoMapperAdapter, self.new, *args)
-        unless Machinist.nerfed?
-          lathe.object.save!
-          lathe.object.reload
-        end
-        lathe.object(&block)
-      end
+      extend ActiveSupport::Concern
+        
+      module ClassMethods
+        include Machinist::Blueprints::ClassMethods
 
-      def make_unsaved(*args)
-        Machinist.with_save_nerfed{ make(*args) }.tap do |object|
-          yield object if block_given?
+        def make(*args, &block)
+          lathe = Lathe.run(Machinist::MongoMapperAdapter, self.new, *args)
+          unless Machinist.nerfed?
+            lathe.object.save!
+            lathe.object.reload
+          end
+          lathe.object(&block)
         end
-      end
 
-      def plan(*args)
-        lathe = Lathe.run(Machinist::MongoMapperAdapter, self.new, *args)
-        Machinist::MongoMapperAdapter.assigned_attributes_without_associations(lathe)
+        def make_unsaved(*args)
+          Machinist.with_save_nerfed{ make(*args) }.tap do |object|
+            yield object if block_given?
+          end
+        end
+
+        def plan(*args)
+          lathe = Lathe.run(Machinist::MongoMapperAdapter, self.new, *args)
+          Machinist::MongoMapperAdapter.assigned_attributes_without_associations(lathe)
+        end
       end
     end
 
     module EmbeddedDocument
+      extend ActiveSupport::Concern
 
-      def make(*args, &block)
-        lathe = Lathe.run(Machinist::MongoMapperAdapter, self.new, *args)
-        lathe.object(&block)
+      module ClassMethods
+        include Machinist::Blueprints::ClassMethods
+
+        def make(*args, &block)
+          lathe = Lathe.run(Machinist::MongoMapperAdapter, self.new, *args)
+          lathe.object(&block)
+        end
       end
     end
   end
 end
 
-MongoMapper::Document.append_extensions(Machinist::Blueprints::ClassMethods)
-MongoMapper::Document.append_extensions(Machinist::MongoMapperExtensions::Document)
+module MongoMapper::Document
+  include Machinist::MongoMapperExtensions::Document
+end
 
-MongoMapper::EmbeddedDocument.append_extensions(Machinist::Blueprints::ClassMethods)
-MongoMapper::EmbeddedDocument.append_extensions(Machinist::MongoMapperExtensions::EmbeddedDocument)
+module MongoMapper::EmbeddedDocument
+  include Machinist::MongoMapperExtensions::EmbeddedDocument
+end
