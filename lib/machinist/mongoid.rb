@@ -73,3 +73,7 @@ end
 
 Mongoid::Document::ClassMethods.send(:include, Machinist::Blueprints::ClassMethods)
 Mongoid::Document::ClassMethods.send(:include, Machinist::MongoidExtensions::Document)
+
+class Mongoid::Relations::Referenced::Many
+  include Machinist::MongoidExtensions::Document
+end

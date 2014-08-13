@@ -85,6 +85,13 @@ describe Machinist, "Mongoid::Document adapter" do
       end
       Person.make.name.should == 'Foobar User'
     end
+
+    it "should link has_many_related objects back to its parent" do
+      Post.blueprint {}
+      Comment.blueprint {}
+      post = Post.make
+      post.comments.make.post.should == post
+    end
   end
   
   describe "plan method" do
