@@ -34,6 +34,10 @@ GEM
     machinist (1.0.6)
     mongo (1.1.5)
       bson (>= 1.1.5)
+    mongomatic (0.7.3)
+      activesupport (>= 2.3.5)
+      bson (~> 1.1)
+      mongo (~> 1.1)
     plucky (0.3.6)
       mongo (~> 1.1)
     rack (1.2.1)
@@ -59,6 +63,7 @@ DEPENDENCIES
   mongo (~> 1.1)
   mongo_mapper!
   mongoid!
+  mongomatic
   rake
   rspec (= 2.4)
   sham_rack
